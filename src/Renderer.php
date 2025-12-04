@@ -39,14 +39,14 @@ final readonly class Renderer
         return "<div class=\"g-recaptcha recaptcha\" data-sitekey=\"{$this->captcha->getSiteKey()}\"></div>";
     }
 
-    public function text(string $name, string $placeholder = null, bool $required = false): string
+    public function text(string $name, ?string $placeholder = null, bool $required = false): string
     {
         return $this->adaptr->text($name, string: $this->htmlProps(
             placeholder: $placeholder,
         ) . ($required ? ' required' : ''));
     }
 
-    public function textarea(string $name, string $placeholder = null, bool $required = false): string
+    public function textarea(string $name, ?string $placeholder = null, bool $required = false): string
     {
         return $this->adaptr->textarea($name, string: $this->htmlProps(
             placeholder: $placeholder,
