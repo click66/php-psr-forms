@@ -16,12 +16,18 @@ final readonly class Handler
     public function __construct(
         private Adaptr $adaptr,
         private ?Captcha $captcha = null,
+        private bool $csrfProtection = false,
     ) {
     }
 
     public function process(ServerRequestInterface $request, array $fields, callable $function): static
     {
         $this->adaptr->setRequest($request);
+
+        if ($this->csrfProtection && !$this->adaptr->hasValidCsrfToken()) {
+            $this->adaptr->flashError('Your session has expired. Please refresh the page and try again.');
+            return $this;
+        }
 
         $data = $this->adaptr->validate(implode(',', $fields));
 

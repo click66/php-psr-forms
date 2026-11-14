@@ -43,3 +43,16 @@ $factory = (new \Click66\Forms\Factory())->withCaptcha($captcha);
 
 # The rest is the same - CAPTCHA will be processed and validated automatically
 ```
+
+### CSRF protection
+```php
+$factory = (new \Click66\Forms\Factory())->withCsrfProtection();   # Can be combined with withCaptcha()
+
+# In your form template (requires session_start()):
+echo $formRenderer->csrf(3600);   # Token lifetime in seconds
+
+# The handler rejects any submission whose token is missing, expired, or was not issued to the current session.
+# The callback is not run, and "Your session has expired. Please refresh the page and try again." is flashed.
+```
+
+Formr's own `csrf_token` check only rejects expired tokens. It accepts a token that does not match the session, so enable `withCsrfProtection()` whenever you render `csrf()`.

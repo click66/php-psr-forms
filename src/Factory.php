@@ -9,13 +9,20 @@ use Click66\Forms\Formr\Adaptr;
 
 final readonly class Factory
 {
-    public function __construct(private ?Captcha $captcha = null)
-    {
+    public function __construct(
+        private ?Captcha $captcha = null,
+        private bool $csrfProtection = false,
+    ) {
     }
 
     public function withCaptcha(Captcha $captcha): static
     {
-        return new static($captcha);
+        return new static($captcha, $this->csrfProtection);
+    }
+
+    public function withCsrfProtection(): static
+    {
+        return new static($this->captcha, true);
     }
 
     public function makeFormHandler(Adaptr $adaptr): Handler
@@ -23,6 +30,7 @@ final readonly class Factory
         return new Handler(
             $adaptr,
             $this->captcha,
+            $this->csrfProtection,
         );
     }
 

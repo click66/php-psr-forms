@@ -74,6 +74,21 @@ final class Adaptr extends Formr
         return $result = $this->catchOutputBuffer($callback);
     }
 
+    public function hasValidCsrfToken(): bool
+    {
+        $issuedToken = $_SESSION['formr']['token'] ?? null;
+        $body = $this->request->getParsedBody();
+        $submitted = is_array($body) ? ($body['csrf_token'] ?? null) : null;
+
+        if (!is_string($issuedToken) || $issuedToken === '' || !is_string($submitted)) {
+            return false;
+        }
+
+        [$token, $expiresAt] = array_pad(explode('|', $submitted, 2), 2, '');
+
+        return hash_equals($issuedToken, $token) && ctype_digit($expiresAt) && time() < (int) $expiresAt;
+    }
+
     public function flashError(string $message): void
     {
         $this->error_message($message, flash: true);
